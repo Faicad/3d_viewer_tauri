@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Model Viewer</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Phase 1: Install electronAPI polyfill before renderer code runs -->
+    <script type="module" src="/src/polyfills.ts"></script>
+    <!-- Phase 2: Original renderer entry from electron project -->
+    <script type="module" src="/electron-src/main.tsx"></script>
+  </body>
+</html>
