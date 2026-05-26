@@ -10,11 +10,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "types": ["node"],
     "paths": {
       "@/*": ["../3d_viewer_electron/src/renderer/*"]
     }
   },
-  "types": ["node"],
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx"

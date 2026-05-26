@@ -6,22 +6,14 @@ const electronRenderer = path.resolve(__dirname, '../3d_viewer_electron/src/rend
 export default defineConfig({
   test: {
     environment: 'node',
+    // Only test Tauri adapter layer. Electron project tests run in their own CI.
     include: [
-      '../3d_viewer_electron/src/**/*.{test,spec}.ts',
       'src/**/*.{test,spec}.ts',
     ],
     exclude: [
-      '../3d_viewer_electron/src/test/**',
-      '../3d_viewer_electron/src/**/__tests__/**',
-      'src/test/**',
       'src/**/__tests__/**',
     ],
     setupFiles: ['fake-indexeddb/auto'],
-    server: {
-      fs: {
-        allow: [path.resolve(__dirname, '../3d_viewer_electron')],
-      },
-    },
   },
   resolve: {
     alias: {
