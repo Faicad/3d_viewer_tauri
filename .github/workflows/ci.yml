@@ -22,6 +22,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout electron project
+        uses: actions/checkout@v4
+        with:
+          repository: Faicad/3d_viewer_electron
+          path: electron-project
+
+      - name: Move electron project to sibling
+        shell: bash
+        run: mv electron-project ../3d_viewer_electron
+
+      - name: Create electron-src symlink (for Vite build)
+        shell: bash
+        run: ln -sf ../3d_viewer_electron/src/renderer electron-src
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
@@ -30,9 +44,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-          cache-dependency-path: |
-            package.json
-            ../3d_viewer_electron/package.json
+          cache-dependency-path: package.json
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
