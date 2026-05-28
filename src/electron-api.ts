@@ -4,6 +4,7 @@ import { getVersion } from '@tauri-apps/api/app'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { openUrl } from '@tauri-apps/plugin-opener'
 import { open } from '@tauri-apps/plugin-dialog'
+import { listen } from '@tauri-apps/api/event'
 
 // Map filename → native path for drag-drop → getFilePath() bridge
 const filePathMap = new Map<string, string>()
@@ -119,6 +120,18 @@ window.electronAPI = {
     return () => {
       active = false
       unlisten?.()
+    }
+  },
+
+  getPendingFilePath: () =>
+    invoke<string | null>('get_pending_file_path'),
+
+  onOpenExternalFile: (callback: (filePath: string) => void) => {
+    const unlistenPromise = listen<string>('open-external-file', (event) => {
+      callback(event.payload)
+    })
+    return () => {
+      unlistenPromise.then((fn) => fn())
     }
   },
 }

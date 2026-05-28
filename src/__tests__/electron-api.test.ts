@@ -35,6 +35,11 @@ vi.mock('@tauri-apps/plugin-dialog', () => ({
   open: vi.fn(),
 }))
 
+const mockListen = vi.fn()
+vi.mock('@tauri-apps/api/event', () => ({
+  listen: mockListen,
+}))
+
 describe('electron-api polyfill', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -128,5 +133,59 @@ describe('electron-api polyfill', () => {
     expect(typeof cleanup).toBe('function')
     cleanup()
     // unlistenFn might not have been called yet (async), but cleanup should still work
+  })
+
+  it('getPendingFilePath calls invoke with correct command', async () => {
+    mockInvoke.mockResolvedValueOnce('/path/to/model.stl')
+    const result = await window.electronAPI.getPendingFilePath()
+    expect(mockInvoke).toHaveBeenCalledWith('get_pending_file_path')
+    expect(result).toBe('/path/to/model.stl')
+  })
+
+  it('getPendingFilePath returns null when no pending file', async () => {
+    mockInvoke.mockResolvedValueOnce(null)
+    const result = await window.electronAPI.getPendingFilePath()
+    expect(result).toBeNull()
+  })
+
+  it('onOpenExternalFile listens for open-external-file event', () => {
+    const unlistenFn = vi.fn()
+    mockListen.mockResolvedValueOnce(unlistenFn)
+
+    const callback = vi.fn()
+    const cleanup = window.electronAPI.onOpenExternalFile(callback)
+
+    expect(mockListen).toHaveBeenCalledWith('open-external-file', expect.any(Function))
+    expect(typeof cleanup).toBe('function')
+  })
+
+  it('onOpenExternalFile callback receives payload from event', async () => {
+    let registeredListener: ((event: { payload: string }) => void) | null = null
+    mockListen.mockImplementation((_event: string, listener: (event: { payload: string }) => void) => {
+      registeredListener = listener
+      return Promise.resolve(vi.fn())
+    })
+
+    const callback = vi.fn()
+    window.electronAPI.onOpenExternalFile(callback)
+
+    // Trigger the event with a payload
+    registeredListener!({ payload: '/path/to/file.stl' })
+    expect(callback).toHaveBeenCalledWith('/path/to/file.stl')
+  })
+
+  it('onOpenExternalFile cleanup calls unlisten', async () => {
+    const unlistenFn = vi.fn()
+    mockListen.mockResolvedValueOnce(unlistenFn)
+
+    const cleanup = window.electronAPI.onOpenExternalFile(() => {})
+    await cleanup()
+    expect(unlistenFn).toHaveBeenCalled()
+  })
+
+  it('checks new methods exist on window.electronAPI', async () => {
+    await import('../electron-api')
+    expect(typeof window.electronAPI.getPendingFilePath).toBe('function')
+    expect(typeof window.electronAPI.onOpenExternalFile).toBe('function')
   })
 })

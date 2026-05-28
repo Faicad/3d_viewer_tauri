@@ -40,6 +40,13 @@
       "nsis": {
         "installMode": "both"
       }
-    }
+    },
+    "fileAssociations": [
+      {
+        "ext": ["stl", "glb", "gltf", "3mf", "step", "stp", "obj", "ply", "fbx", "dae", "3ds", "usdz", "drc", "bvh", "vtk", "vtp", "xyz", "pdb", "nrrd", "gcode", "wrl", "vox", "kmz", "amf", "lwo", "md2", "pcd", "3dm"],
+        "name": "3D Model File",
+        "description": "3D Model File"
+      }
+    ]
   }
 }
