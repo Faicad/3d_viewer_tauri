@@ -1,7 +1,7 @@
 # Porting Baseline — 3D Viewer Tauri
 
 This document records which version of the upstream Electron project
-(`../3d_viewer_electron`) the Tauri project is currently in sync with.
+(`./3d_viewer_electron`) the Tauri project is currently in sync with.
 
 ## Architecture Overview
 
@@ -17,15 +17,15 @@ Tauri project
 │   └── tauri.conf.json       Bundle config, file associations
 ├── electron-src/         ← Junction/symlink, NOT tracked in git
 │                          (see .gitignore)
-└── @/ → ../3d_viewer_electron/src/renderer/  ← Vite alias, AUTOMATIC
+└── @/ → ./3d_viewer_electron/src/renderer/  ← Vite alias, AUTOMATIC
 ```
 
 There are **two code pathways** in the Tauri project:
 
 ### 1. Shared renderer code — AUTOMATIC (no porting needed)
 
-The Vite alias `@` → `../3d_viewer_electron/src/renderer/` and `tsconfig.json`
-path mapping `@/*` → `../3d_viewer_electron/src/renderer/*` mean the Tauri
+The Vite alias `@` → `./3d_viewer_electron/src/renderer/` and `tsconfig.json`
+path mapping `@/*` → `./3d_viewer_electron/src/renderer/*` mean the Tauri
 project **always uses the latest Electron project renderer code** at both
 compile time and runtime. No porting is needed for files under
 `src/renderer/` in the Electron project.
@@ -119,15 +119,15 @@ project, follow these steps:
 
 ```bash
 # Check unported Electron commits (shows commits touching electron/ directory)
-cd ../3d_viewer_electron
+cd 3d_viewer_electron
 git log --oneline 9082740..HEAD -- electron/
 
 # Check all ports from electron to Tauri adapter layer
 # (looking for commit messages referencing "port from electron")
-git log --all --oneline --grep="port" ../3d_viewer_tauri/
+git log --all --oneline --grep="port" ../
 
 # Verify renderer code is in sync (Vite alias check)
-# The alias @ → ../3d_viewer_electron/src/renderer is used at both
+# The alias @ → ./3d_viewer_electron/src/renderer is used at both
 # dev time (vite.config.ts) and type-check time (tsconfig.json paths).
 # No manual sync needed for renderer-only changes.
 ```

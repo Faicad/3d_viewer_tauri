@@ -22,19 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout electron project
+      - name: Checkout electron project (inside project dir)
         uses: actions/checkout@v4
         with:
           repository: Faicad/3d_viewer_electron
-          path: electron-project
-
-      - name: Move electron project to sibling
-        shell: bash
-        run: mv electron-project ../3d_viewer_electron
+          path: 3d_viewer_electron
 
       - name: Create electron-src symlink (for Vite build)
         shell: bash
-        run: ln -sf ../3d_viewer_electron/src/renderer electron-src
+        run: ln -sf 3d_viewer_electron/src/renderer electron-src
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4

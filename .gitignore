@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Electron project cloned inside (separate repo)
+3d_viewer_electron/
+
 # Directory junction to electron project
 electron-src/
 

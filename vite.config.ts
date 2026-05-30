@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 
-const originalRenderer = path.resolve(__dirname, '../3d_viewer_electron/src/renderer')
-const originalPublic = path.resolve(__dirname, '../3d_viewer_electron/src/renderer/public')
+const originalRenderer = path.resolve(__dirname, './3d_viewer_electron/src/renderer')
+const originalPublic = path.resolve(__dirname, './3d_viewer_electron/src/renderer/public')
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -24,7 +24,7 @@ export default defineConfig({
     fs: {
       allow: [
         __dirname,
-        path.resolve(__dirname, '../3d_viewer_electron'),
+        path.resolve(__dirname, './3d_viewer_electron'),
       ],
     },
     watch: {

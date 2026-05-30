@@ -12,14 +12,14 @@ export default tseslint.config(
       'node_modules/**',
       'scripts/**',
       'src-tauri/**',
-      '../3d_viewer_electron/out/**',
-      '../3d_viewer_electron/dist/**',
-      '../3d_viewer_electron/node_modules/**',
+      './3d_viewer_electron/out/**',
+      './3d_viewer_electron/dist/**',
+      './3d_viewer_electron/node_modules/**',
     ],
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}', '../3d_viewer_electron/src/renderer/**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx}', './3d_viewer_electron/src/renderer/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2022,
       globals: {

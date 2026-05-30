@@ -12,7 +12,7 @@
     "noEmit": true,
     "types": ["node"],
     "paths": {
-      "@/*": ["../3d_viewer_electron/src/renderer/*"]
+      "@/*": ["./3d_viewer_electron/src/renderer/*"]
     }
   },
   "include": [

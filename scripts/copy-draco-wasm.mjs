@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const electronProjectDir = path.resolve(__dirname, '../../3d_viewer_electron');
+const electronProjectDir = path.resolve(__dirname, '../3d_viewer_electron');
 
 const srcDir = path.resolve(electronProjectDir, 'node_modules/three/examples/jsm/libs/draco');
 const destDir = path.resolve(electronProjectDir, 'src/renderer/public/wasm/draco');
