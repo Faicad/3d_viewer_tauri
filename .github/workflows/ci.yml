@@ -79,5 +79,52 @@ jobs:
       - name: Build frontend
         run: pnpm run build
 
-      - name: Build Rust
+      - name: Build Rust (debug)
         run: cargo build --manifest-path src-tauri/Cargo.toml
+
+      - name: Build installer (tauri build)
+        run: pnpm exec tauri build
+
+      - name: Verify installer (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem "src-tauri/target/release/bundle/nsis/*.exe" | Select-Object -First 1
+          Write-Host "Installer: $($installer.FullName)"
+          Start-Process -Wait -FilePath $installer.FullName -ArgumentList "/S"
+
+          $paths = @(
+            "$env:LOCALAPPDATA\Programs\3D Model Viewer\3D Model Viewer.exe"
+            "${env:ProgramFiles}\3D Model Viewer\3D Model Viewer.exe"
+          )
+          $exe = $null
+          foreach ($p in $paths) { if (Test-Path $p) { $exe = $p; break } }
+          if (-not $exe) { throw "Installed executable not found" }
+          Write-Host "Installed: $exe"
+          Get-ChildItem (Split-Path $exe)
+
+          $proc = Start-Process -FilePath $exe -PassThru
+          $exited = $proc.WaitForExit(10000)
+          if (-not $exited) { $proc.Kill(); Write-Host "App ran for 10s (success)" }
+          else { Write-Host "App exited with code $($proc.ExitCode)" }
+
+      - name: Verify installer (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          appimage=$(ls src-tauri/target/release/bundle/appimage/*.AppImage | head -1)
+          echo "AppImage: $appimage"
+          chmod +x "$appimage"
+          timeout 10 xvfb-run -a "$appimage" --no-sandbox 2>&1 || true
+
+      - name: Verify installer (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          dmg=$(ls src-tauri/target/release/bundle/dmg/*.dmg | head -1)
+          echo "DMG: $dmg"
+          hdiutil attach "$dmg" -nobrowse -mountpoint /tmp/vdmg
+          app=$(ls /tmp/vdmg/*.app | head -1)
+          cp -R "$app" /tmp/Viewer.app
+          hdiutil detach /tmp/vdmg
+          timeout 10 /tmp/Viewer.app/Contents/MacOS/* 2>&1 || true
