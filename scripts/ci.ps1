@@ -2,6 +2,8 @@
 # Fast checks (~30s): typecheck + lint + unit tests + component tests
 # Slow checks (~3min): Rust check + clippy + build
 
+$ErrorActionPreference = "Stop"
+
 Write-Host "========================================"  -ForegroundColor Cyan
 Write-Host "  1/7  Type check (tsc --noEmit)"       -ForegroundColor Cyan
 Write-Host "========================================"  -ForegroundColor Cyan
